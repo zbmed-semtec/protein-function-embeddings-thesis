@@ -1,5 +1,6 @@
 import re
 import csv
+import itertools
 import pandas as pd
 import xml.etree.ElementTree as ET
 
@@ -27,10 +28,20 @@ def extract_function_comment(input_filepath) -> list[dict[str, str]]:
         for comment in comments:
             if comment.attrib['type'] == "function":
                 for tag in comment:
+                    if 'evidence' in tag.attrib:
+                        # All evidence tags in the function comment.
+                        evidence_tags = tag.attrib['evidence'].split(" ")
+                        all_eco_tags = []
+                        # All evidence tags in the XML file of the protein.
+                        evidence = elem.findall('{http://uniprot.org/uniprot}evidence')
+                        for value in evidence_tags:
+                            eco_tag = [tag.attrib['type'] for tag in evidence if tag.attrib['key'] == value]
+                            all_eco_tags.append(eco_tag[0])
+                        entry["Evidence tags"] = ", ".join(all_eco_tags)
                     function = tag.text
                     entry["Function"] = function
             else:
-                # Adds an empty string if no function comment is found
+                # Adds an empty string if no function comment is found.
                 function = ""
         all_entries.append(entry)
     return all_entries
@@ -46,7 +57,7 @@ def write_to_tsv(entries, filename):
     filename : str
         Name for the TSV file.
     """
-    tsv_columns = ['Accession', 'Function']
+    tsv_columns = ['Accession', 'Function', 'Evidence tags']
     with open(filename, 'w') as tsv_file:
         writer = csv.DictWriter(tsv_file, fieldnames=tsv_columns, delimiter='\t')
         writer.writeheader()
@@ -55,7 +66,7 @@ def write_to_tsv(entries, filename):
 
 def preprocess_function(input_tsv_file, output_tsv_file):
     """
-    Removes references to the PubMed articles and PMIDs in the function comments and creates a new TSV file.
+    Removes references to the PubMed articles, PMIDs and evidence tags in the function comments and creates a new TSV file.
     Parameters
     ----------
     input_tsv_file : str
@@ -63,16 +74,26 @@ def preprocess_function(input_tsv_file, output_tsv_file):
     output_tsv_file : str
         Name for the modified TSV file.
     """
-    data = pd.read_csv(input_tsv_file, delimiter='\t')
+    data = pd.read_csv(input_tsv_file, delimiter='\t', dtype='str')
+    # Adds a column for all reference texts.
+    data.insert(3, "Evidence text", "")
+    # Drops all entries without a function.
+    data = data.dropna(subset=['Function']).reset_index(drop=True)
     for index in range(len(data)):
-        first_processed_function = re.sub(r" [(]PubMed:[0-9]+(.*?)[)]", '', str(data.loc[index]['Function']))
-        processed_function = re.sub(r" [(]Ref.[^)]*[)]", '', str(first_processed_function))
+        pubmed_refs = re.findall(r"[(]PubMed:[0-9]+[)]", str(data.loc[index]["Function"]))  # PubMed Articles
+        refs = re.findall(r"[(]Ref.[^)]*[)]", str(data.loc[index]["Function"]))  # References to PMIDs
+        sim_tags = re.findall(r"[(]By similarity[)]", str(data.loc[index]["Function"]))  # Evidence tags
+        evidence_text = list(itertools.chain(pubmed_refs, refs, sim_tags))
+        first_processed_function = re.sub(r" [(]PubMed:[0-9]+(.*?)[)]", '', str(data.loc[index]['Function']))  # PubMed Articles
+        second_processed_function = re.sub(r" [(]Ref.[^)]*[)]", '', str(first_processed_function))  # References to PMIDs
+        processed_function = re.sub(r" [(]By similarity[)]", '', str(second_processed_function))  # Evidence tags
         data.iloc[index, 1] = processed_function
+        data.iloc[index, 3] = ", ".join(evidence_text)
     data.to_csv(output_tsv_file, sep='\t')
     return
 
 
 if __name__ == "__main__":
-    entries = extract_function_comment("data/uniprot_sprot.xml")
+    entries = extract_function_comment("data/uniprotkb/reviewed/uniprot_sprot.xml")
     write_to_tsv(entries, "rev-20220525-UniProtKB.tsv")
-    preprocess_function("rev-20220525-UniProtKB.tsv", "processed-rev-20220525-UniProtKB.tsv")
+    preprocess_function("data/rev-20220525-UniProtKB.tsv", "data/processed-rev-20220525-UniProtKB.tsv")
