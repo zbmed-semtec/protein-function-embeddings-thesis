@@ -1,9 +1,10 @@
 import re
 import pandas as pd
 import numpy as np
-from typing import Tuple, List, Any
+from typing import Tuple, List, Any, Iterable
 from nltk.tokenize import word_tokenize
 from gensim.models import Word2Vec
+from gensim.parsing.preprocessing import STOPWORDS
 
 
 def convert_lowercase(text: str) -> str:
@@ -87,7 +88,7 @@ def preprocess_data(data: pd.DataFrame) -> tuple[list[Any], list[Any]]:
     return accessions, functions
 
 
-def process_from_tsv(input_file_path: str):
+def process_from_tsv(input_file_path: str) -> tuple[Iterable, Iterable]:
     """
     Loads and pre-processes the data from the input TSV file.
     Parameters
@@ -114,9 +115,9 @@ def create_word2vec_model(docs: list, output_file_path: str) -> Word2Vec:
     model : Word2Vec
         Word2Vec model.
     """
-    model = Word2Vec(sentences=docs, vector_size=200, epochs=5, window=5, min_count=1, workers=4)
-    model.save(output_file_path)
+    model = Word2Vec(sentences=docs, vector_size=200, epochs=5, window=5, min_count=50, workers=4, sg=1)
     model.build_vocab(docs)
+    model.save(output_file_path)
     print("Model saved")
     return model
 
@@ -142,6 +143,7 @@ def create_document_embeddings(accessions: list, functions: list, word2vec_model
         embeddings_list = []
         for word in functions[index]:
             embeddings_list.append(model.wv[word])
+        #  Generate document embeddings from word embeddings
         first = True
         document = []
         for embedding in embeddings_list:
@@ -164,12 +166,31 @@ def create_document_embeddings(accessions: list, functions: list, word2vec_model
         np.save(f'{output_dir_path}/{pmid}', document_embeddings[index])
 
     print("Embeddings Generated")
+
+
+def analyze_vocab(model) -> None:
+    """
+    Outputs the vocabulary statistics and calculates the number of stop words present in the model vocabulary.
+    Parameters
+    ----------
+    model: Word2Vec model
+        Gensim word2vec model.
+    """
     print("Dimensions of embedding matrix", model.wv.vectors.shape)
     print("Vocabulary size", model.wv.vectors.shape[0])
+    vocab = model.wv.key_to_index
+    vocab = frozenset(vocab.keys())
+    stop_words = STOPWORDS
+    print("Number of stop words present in the vocab:", len(vocab.intersection(stop_words)))
 
 
 if __name__ == "__main__":
     # nltk.download('punkt')
     accessions, functions = process_from_tsv("./data/output/functions/rev-20220525-UniProtKB.tsv")
-    create_word2vec_model(functions, "./data/output/word2vec.model")
+    create_word2vec_model(functions, "./data/output/model/gensim/sg/min_count_50/word2vec.model")
     create_document_embeddings(accessions, functions, "./data/output/model/word2vec.model", "./data/output/embeddings")
+    model_sg = Word2Vec.load("./data/output/model/gensim/sg/min_count_3/word2vec.model")
+    model_cbow = Word2Vec.load("./data/output/model/gensim/cbow/min_count_3/word2vec.model")
+    analyze_vocab(model_sg)
+    analyze_vocab(model_cbow)
+
