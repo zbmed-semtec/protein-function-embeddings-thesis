@@ -7,7 +7,8 @@ import xml.etree.ElementTree as ET
 
 def extract_function_comment(input_filepath) -> list[dict[str, str]]:
     """
-    Extracts the accession number and the function comment of each entry from the UniProtKB/Swiss-Prot XML file.
+    Extracts the accession number, function comment, evidence tags, taxon, taxonomy lineage and taxon id of each entry
+    from the UniProtKB/Swiss-Prot XML file.
     Parameters
     ----------
     input_filepath : str
@@ -23,11 +24,13 @@ def extract_function_comment(input_filepath) -> list[dict[str, str]]:
         entry = {}
         accession = elem.find('{http://uniprot.org/uniprot}accession')
         accession_no = accession.text
-        entry["Accession"] = accession_no
+        entry["accession"] = accession_no
         comments = elem.findall('{http://uniprot.org/uniprot}comment')
         for comment in comments:
             if comment.attrib['type'] == "function":
                 for tag in comment:
+                    function = tag.text
+                    entry["function"] = function
                     if 'evidence' in tag.attrib:
                         # All evidence tags in the function comment.
                         evidence_tags = tag.attrib['evidence'].split(" ")
@@ -37,19 +40,29 @@ def extract_function_comment(input_filepath) -> list[dict[str, str]]:
                         for value in evidence_tags:
                             eco_tag = [tag.attrib['type'] for tag in evidence if tag.attrib['key'] == value]
                             all_eco_tags.append(eco_tag[0])
-                        entry["Evidence tags"] = ", ".join(all_eco_tags)
-                    function = tag.text
-                    entry["Function"] = function
+                        entry["evidence tags"] = ", ".join(all_eco_tags)
             else:
                 # Adds an empty string if no function comment is found.
                 function = ""
+        taxonomy = elem.findall('{http://uniprot.org/uniprot}organism')
+        for data in taxonomy:
+            for subtag in data:
+                if subtag.tag == "{http://uniprot.org/uniprot}dbReference":
+                    taxon_id = subtag.attrib["type"] + " " + subtag.attrib["id"]
+                if subtag.tag == "{http://uniprot.org/uniprot}lineage":
+                    taxonomy_lineage = []
+                    for lineage in subtag:
+                        taxonomy_lineage.append(lineage.text)
+                    entry["taxon"] = taxonomy_lineage[-1]
+                    entry["taxonomy lineage"] = taxonomy_lineage
+                    entry["taxon identifier"] = taxon_id
         all_entries.append(entry)
     return all_entries
 
 
 def write_to_tsv(entries, filename):
     """
-    Creates and writes each UniPrtKB/Swiss-Prot entry as a row into a tsv file.
+    Creates and writes each UniProtKB/Swiss-Prot entry as a row into a tsv file.
     Parameters
     ----------
     entries : list[dict[str,str]
@@ -57,7 +70,7 @@ def write_to_tsv(entries, filename):
     filename : str
         Name for the TSV file.
     """
-    tsv_columns = ['Accession', 'Function', 'Evidence tags']
+    tsv_columns = ['accession', 'function', 'evidence tags', 'taxon', 'taxonomy lineage', 'taxon identifier']
     with open(filename, 'w') as tsv_file:
         writer = csv.DictWriter(tsv_file, fieldnames=tsv_columns, delimiter='\t')
         writer.writeheader()
@@ -76,7 +89,7 @@ def preprocess_function(input_tsv_file, output_tsv_file):
     """
     data = pd.read_csv(input_tsv_file, delimiter='\t', dtype='str')
     # Adds a column for all reference texts.
-    data.insert(3, "Evidence text", "")
+    data.insert(3, "evidence text", "")
     # Drops all entries without a function.
     data = data.dropna(subset=['Function']).reset_index(drop=True)
     for index in range(len(data)):
