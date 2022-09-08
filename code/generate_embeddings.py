@@ -1,7 +1,8 @@
 import re
+import csv
 import pandas as pd
 import numpy as np
-from typing import Tuple, List, Any, Iterable
+from typing import Any, Iterable
 from nltk.tokenize import word_tokenize
 from gensim.models import Word2Vec
 from gensim.parsing.preprocessing import STOPWORDS
@@ -115,7 +116,7 @@ def create_word2vec_model(docs: list, output_file_path: str) -> Word2Vec:
     model : Word2Vec
         Word2Vec model.
     """
-    model = Word2Vec(sentences=docs, vector_size=200, epochs=5, window=5, min_count=50, workers=4, sg=1)
+    model = Word2Vec(sentences=docs, vector_size=200, epochs=5, window=5, min_count=4, workers=4)
     model.build_vocab(docs)
     model.save(output_file_path)
     print("Model saved")
@@ -127,7 +128,7 @@ def create_document_embeddings(accessions: list, functions: list, word2vec_model
     Generates document embeddings from the generated Word2Vec model.
     Parameters
     ----------
-    accessions  :list
+    accessions : list
         List of accession numbers.
     functions : list
         List of function comments.
@@ -184,13 +185,28 @@ def analyze_vocab(model) -> None:
     print("Number of stop words present in the vocab:", len(vocab.intersection(stop_words)))
 
 
+def get_vocab_difference(first_model, second_model) -> None:
+    first_model = Word2Vec.load(first_model)
+    second_model = Word2Vec.load(second_model)
+    vocab_one = first_model.wv.key_to_index
+    vocab_two = second_model.wv.key_to_index
+    difference = list(set(vocab_one).difference(vocab_two))
+    cw = csv.writer(open("vocabulary_difference.csv", 'w'))
+    cw.writerow(sorted(difference, key=len))
+    print("Difference in vocabulary:", len(difference))
+
+
 if __name__ == "__main__":
     # nltk.download('punkt')
-    accessions, functions = process_from_tsv("./data/output/functions/rev-20220525-UniProtKB.tsv")
-    create_word2vec_model(functions, "./data/output/model/gensim/sg/min_count_50/word2vec.model")
-    create_document_embeddings(accessions, functions, "./data/output/model/word2vec.model", "./data/output/embeddings")
-    model_sg = Word2Vec.load("./data/output/model/gensim/sg/min_count_3/word2vec.model")
-    model_cbow = Word2Vec.load("./data/output/model/gensim/cbow/min_count_3/word2vec.model")
-    analyze_vocab(model_sg)
-    analyze_vocab(model_cbow)
-
+    # accessions, functions = process_from_tsv("./data/output/functions/rev-20220525-UniProtKB.tsv")
+    # create_word2vec_model(functions, "./data/output/model/gensim/cbow/min_count_4/word2vec.model")
+    # create_document_embeddings(accessions, functions, "./data/output/model/word2vec.model", "./data/output/embeddings")
+    # model_sg = Word2Vec.load("./data/output/model/gensim/cbow/min_count_4/word2vec.model")
+    # analyze_vocab(model_sg)
+    diff = get_vocab_difference("./data/output/model/gensim/sg/min_count_4/word2vec.model", "./data/output/model/gensim/sg/min_count_5/word2vec.model")
+    # model_sg_5 = Word2Vec.load("./data/output/model/gensim/sg/min_count_5/word2vec.model")
+    # analyze_vocab(model_sg_5)
+    # print(model_sg.wv.most_similar("protein"))
+    # print(model_cbow.wv.most_similar("protein"))
+    # print(model_sg.wv.most_similar("cdh1"))
+    # print(model_cbow.wv.most_similar("cdh1"))
