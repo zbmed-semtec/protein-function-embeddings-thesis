@@ -198,6 +198,7 @@ def get_vocab_difference(first_model, second_model) -> None:
 
 if __name__ == "__main__":
     # nltk.download('punkt')
+<<<<<<< HEAD
     accessions, functions = process_from_tsv("./data/output/functions/rev-20220525-UniProtKB.tsv")
     create_word2vec_model(functions, "./data/output/model/gensim/cbow/min_count_1/word2vec.model")
     create_document_embeddings(accessions, functions, "./data/output/model/word2vec.model", "./data/output/embeddings")
@@ -205,3 +206,17 @@ if __name__ == "__main__":
     analyze_vocab(model_sg)
     get_vocab_difference("./data/output/model/gensim/sg/min_count_4/word2vec.model", "./data/output/model/gensim/sg/min_count_5/word2vec.model")
     
+=======
+    # accessions, functions = process_from_tsv("./data/output/functions/rev-20220525-UniProtKB.tsv")
+    # create_word2vec_model(functions, "./data/output/model/gensim/cbow/min_count_4/word2vec.model")
+    # create_document_embeddings(accessions, functions, "./data/output/model/word2vec.model", "./data/output/embeddings")
+    # model_sg = Word2Vec.load("./data/output/model/gensim/cbow/min_count_4/word2vec.model")
+    # analyze_vocab(model_sg)
+    diff = get_vocab_difference("./data/output/model/gensim/sg/min_count_4/word2vec.model", "./data/output/model/gensim/sg/min_count_5/word2vec.model")
+    # model_sg_5 = Word2Vec.load("./data/output/model/gensim/sg/min_count_5/word2vec.model")
+    # analyze_vocab(model_sg_5)
+    # print(model_sg.wv.most_similar("protein"))
+    # print(model_cbow.wv.most_similar("protein"))
+    # print(model_sg.wv.most_similar("cdh1"))
+    # print(model_cbow.wv.most_similar("cdh1"))
+>>>>>>> e9cf244e876ba4dde9bac32f583055cae7e810a6
