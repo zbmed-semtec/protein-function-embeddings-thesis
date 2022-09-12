@@ -40,7 +40,7 @@ def extract_function_comment(input_filepath) -> list[dict[str, str]]:
                         for value in evidence_tags:
                             eco_tag = [tag.attrib['type'] for tag in evidence if tag.attrib['key'] == value]
                             all_eco_tags.append(eco_tag[0])
-                        entry["evidence tags"] = ", ".join(all_eco_tags)
+                        entry["evidence_tags"] = ", ".join(all_eco_tags)
             else:
                 # Adds an empty string if no function comment is found.
                 function = ""
@@ -54,8 +54,8 @@ def extract_function_comment(input_filepath) -> list[dict[str, str]]:
                     for lineage in subtag:
                         taxonomy_lineage.append(lineage.text)
                     entry["taxon"] = taxonomy_lineage[-1]
-                    entry["taxonomy lineage"] = taxonomy_lineage
-                    entry["taxon identifier"] = taxon_id
+                    entry["taxonomy_lineage"] = taxonomy_lineage
+                    entry["taxon_identifier"] = taxon_id
         all_entries.append(entry)
     return all_entries
 
@@ -70,7 +70,7 @@ def write_to_tsv(entries, filename):
     filename : str
         Name for the TSV file.
     """
-    tsv_columns = ['accession', 'function', 'evidence tags', 'taxon', 'taxonomy lineage', 'taxon identifier']
+    tsv_columns = ['accession', 'function', 'evidence_tags', 'taxon', 'taxonomy_lineage', 'taxon_identifier']
     with open(filename, 'w') as tsv_file:
         writer = csv.DictWriter(tsv_file, fieldnames=tsv_columns, delimiter='\t')
         writer.writeheader()
@@ -89,7 +89,7 @@ def preprocess_function(input_tsv_file, output_tsv_file):
     """
     data = pd.read_csv(input_tsv_file, delimiter='\t', dtype='str')
     # Adds a column for all reference texts.
-    data.insert(3, "evidence text", "")
+    data.insert(3, "evidence_text", "")
     # Drops all entries without a function.
     data = data.dropna(subset=['Function']).reset_index(drop=True)
     for index in range(len(data)):
@@ -109,4 +109,4 @@ def preprocess_function(input_tsv_file, output_tsv_file):
 if __name__ == "__main__":
     entries = extract_function_comment("data/uniprotkb/reviewed/uniprot_sprot.xml")
     write_to_tsv(entries, "rev-20220525-UniProtKB.tsv")
-    preprocess_function("data/rev-20220525-UniProtKB.tsv", "data/processed-rev-20220525-UniProtKB.tsv")
+    preprocess_function("data/output/functions/rev-20220525-UniProtKB.tsv", "data/processed-rev-20220525-UniProtKB.tsv")
