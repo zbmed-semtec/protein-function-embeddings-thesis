@@ -17,7 +17,7 @@ def write_xml(input_tsv_file: str, output_xml_file: str) -> None:
     root = Element('collection')
     df = pd.read_csv(input_tsv_file, delimiter='\t', index_col=0, converters={'taxon_lineage': pd.eval})
 
-    for index, row in df.head(10).iterrows():
+    for index, row in df.iterrows():
         entries = SubElement(root, 'entry')
         accession = SubElement(entries, 'accession')
         accession.text = str(row['accession'])
@@ -38,7 +38,7 @@ def write_xml(input_tsv_file: str, output_xml_file: str) -> None:
             taxonomy_lineage = SubElement(taxonomy, 'lineage')
             taxonomy_lineage.text = lineage.strip("'")
         taxon_id = SubElement(taxonomy, 'taxon_id')
-        taxon_id.text = str(row['taxon_identifier'])
+        taxon_id.text = str(row['taxon_identifier'].split("NCBI Taxonomy ")[1])
 
     et = ElementTree(root)
     xml.etree.ElementTree.indent(et, space=" ", level=0)
@@ -47,4 +47,4 @@ def write_xml(input_tsv_file: str, output_xml_file: str) -> None:
 
 
 if __name__ == "__main__":
-    write_xml("./data/output/functions/rev-20220525-UniProtKB.tsv", "./data/output/functions/output.xml")
+    write_xml("./data/output/functions/rev-20220525-UniProtKB.tsv", "./data/output/functions/swissprot.xml")
