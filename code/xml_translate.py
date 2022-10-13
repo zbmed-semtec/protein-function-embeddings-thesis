@@ -99,15 +99,14 @@ def translate(input_filepath: str, mesh_trans_dict: dict, go_trans_dict: dict) -
     with open(input_filepath, "r") as file:
         # Read each line in the file, readlines() returns a list of lines
         content = file.readlines()
-        first_line = content[0]
         # Combine the lines in the list into a string
         content = "".join(content)
         bs_content = bs(content, "lxml")
         accession_ids = bs_content.find_all('accession')
         function_text = bs_content.find_all('function')
-        functions = []
         all_function_text = {}
         for accession, function in zip(accession_ids, function_text):
+            functions = []
             accession_id = accession.text
             for word in function:
                 if word.string in mesh_trans_dict:
@@ -134,10 +133,10 @@ def save_text(output_filepath: str, functions_dict: dict) -> None:
     """
     df = pd.DataFrame(functions_dict.items(), columns=['accession', 'function'])
     df.to_csv(output_filepath, sep='\t')
-    pass
 
 
 if __name__ == "__main__":
     mesh_dict, go_dict = create_dict("./data/output/annotations/swissprot_go_mesh_formatted.xml")
     function_plain_text = translate("./data/output/annotations/swissprot_go_mesh_formatted.xml", mesh_dict, go_dict)
     save_text("swissprot_functions.tsv", function_plain_text)
+
