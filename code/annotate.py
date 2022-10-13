@@ -58,9 +58,10 @@ def escape_character(contents) -> str:
     contents : str
         Formatted body of the annotated XML file.
     """
-    function = re.findall(r'<function>(.*?)</function>', contents, re.DOTALL)[0]
-    # contents = contents.replace(function, re.sub(r"<(?!(/*)z:GO)", "&lt;", function))
-    contents = contents.replace(function, re.sub(r"<(?!(/*)z:(MESH|go))", "&lt;", function))
+    functions = re.findall(r'<function>(.*?)</function>', contents, re.DOTALL)
+    for function in functions:
+        # contents = contents.replace(function, re.sub(r"<(?!(/*)z:GO)", "&lt;", function))
+        contents = contents.replace(function, re.sub(r"<(?!(/*)z:(MESH|go))", "&lt;", function))
     return contents
 
 
