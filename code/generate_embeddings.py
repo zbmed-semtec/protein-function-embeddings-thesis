@@ -1,11 +1,9 @@
 import re
-import csv
 import pandas as pd
 import numpy as np
 from typing import Any, Iterable
 from nltk.tokenize import word_tokenize
 from gensim.models import Word2Vec
-from gensim.parsing.preprocessing import STOPWORDS
 
 
 def convert_lowercase(text: str) -> str:
@@ -77,15 +75,15 @@ def preprocess_data(data: pd.DataFrame) -> tuple[list[Any], list[Any]]:
     accessions = []
     functions = []
     for index, row in data.iterrows():
-        row["Function"] = convert_lowercase(row["Function"])
-        row["Function"] = tokenize(row["Function"])
-        row["Function"] = remove_special_characters(row["Function"])
+        row["function"] = convert_lowercase(row["function"])
+        row["function"] = tokenize(row["function"])
+        row["function"] = remove_special_characters(row["function"])
 
-        data.at[index, 'Accession'] = row["Accession"]
-        data.at[index, 'Function'] = row["Function"]
+        data.at[index, 'accession'] = row["accession"]
+        data.at[index, 'function'] = row["function"]
 
-        accessions.append(row["Accession"])
-        functions.append(row["Function"])
+        accessions.append(row["accession"])
+        functions.append(row["function"])
     return accessions, functions
 
 
@@ -102,11 +100,13 @@ def process_from_tsv(input_file_path: str) -> tuple[Iterable, Iterable]:
     return accessions, functions
 
 
-def create_word2vec_model(docs: list, output_file_path: str) -> Word2Vec:
+def create_word2vec_model(params: dict, docs: list, output_file_path: str) -> Word2Vec:
     """
-    Generates the Word2Vec model and builds the vocabulary from the function comment texts.
+    Generates and saves the Word2Vec model and builds the vocabulary from the function comment texts.
     Parameters
     ----------
+    params: dict
+        Dictionary of input model parameters.
     docs : list
         List of functions comments.
     output_file_path : str
@@ -116,7 +116,9 @@ def create_word2vec_model(docs: list, output_file_path: str) -> Word2Vec:
     model : Word2Vec
         Word2Vec model.
     """
-    model = Word2Vec(sentences=docs, vector_size=200, epochs=5, window=5, min_count=4, workers=4)
+    params['sentences'] = docs
+    model = Word2Vec(**params)
+    # model = Word2Vec(sentences=docs, vector_size=200, epochs=5, window=5, min_count=2, workers=4)
     model.build_vocab(docs)
     model.save(output_file_path)
     print("Model saved")
@@ -141,9 +143,14 @@ def create_document_embeddings(accessions: list, functions: list, word2vec_model
     document_embeddings = []
 
     for index in range(len(accessions)):
+        # print(index)
         embeddings_list = []
         for word in functions[index]:
-            embeddings_list.append(model.wv[word])
+            try:
+                embeddings_list.append(model.wv[word])
+            # Does not account for words having frequency below min_count.
+            except:
+                continue
         #  Generate document embeddings from word embeddings
         first = True
         document = []
@@ -169,38 +176,10 @@ def create_document_embeddings(accessions: list, functions: list, word2vec_model
     print("Embeddings Generated")
 
 
-def analyze_vocab(model) -> None:
-    """
-    Outputs the vocabulary statistics and calculates the number of stop words present in the model vocabulary.
-    Parameters
-    ----------
-    model: Word2Vec model
-        Gensim word2vec model.
-    """
-    print("Dimensions of embedding matrix", model.wv.vectors.shape)
-    print("Vocabulary size", model.wv.vectors.shape[0])
-    vocab = model.wv.key_to_index
-    vocab = frozenset(vocab.keys())
-    stop_words = STOPWORDS
-    print("Number of stop words present in the vocab:", len(vocab.intersection(stop_words)))
-
-
-def get_vocab_difference(first_model, second_model) -> None:
-    first_model = Word2Vec.load(first_model)
-    second_model = Word2Vec.load(second_model)
-    vocab_one = first_model.wv.key_to_index
-    vocab_two = second_model.wv.key_to_index
-    difference = list(set(vocab_one).difference(vocab_two))
-    cw = csv.writer(open("vocabulary_difference.csv", 'w'))
-    cw.writerow(sorted(difference, key=len))
-    print("Difference in vocabulary:", len(difference))
-
-
 if __name__ == "__main__":
-    # nltk.download('punkt')
+    # # # nltk.download('punkt')
     accessions, functions = process_from_tsv("./data/output/functions/rev-20220525-UniProtKB.tsv")
-    create_word2vec_model(functions, "./data/output/model/gensim/cbow/min_count_1/word2vec.model")
-    create_document_embeddings(accessions, functions, "./data/output/model/word2vec.model", "./data/output/embeddings")
-    model_sg = Word2Vec.load("./data/output/model/gensim/cbow/min_count_4/word2vec.model")
-    analyze_vocab(model_sg)
-    get_vocab_difference("./data/output/model/gensim/sg/min_count_4/word2vec.model", "./data/output/model/gensim/sg/min_count_5/word2vec.model")
+    params = {'vector_size': 200, 'epochs': 5, 'window': 5, 'min_count': 2, 'workers': 4, 'sg': 0}
+    create_word2vec_model(params, functions, "./data/output/model/word2doc2vec/cbow/min_count_2/word2vec.model")
+    model = Word2Vec.load("./data/output/model/word2doc2vec/cbow/min_count_2/word2vec.model")
+    create_document_embeddings(accessions, functions, "./data/output/model/word2doc2vec/cbow/min_count_2/word2vec.model", "./data/output/embeddings/word2doc2vec/cbow/min_count_2/")
