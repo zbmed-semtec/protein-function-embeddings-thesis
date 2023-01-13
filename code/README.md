@@ -1,0 +1,18 @@
+# Pipeline
+
+1. [extract_function.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/extract_function.py)
+2. [format_xml.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/format_xml.py)
+3. [parse_mesh.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/parse_mesh.py)
+4. [parse_go.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/parse_go.py)
+5. [analyze_taxon.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/analyze_taxon.py)
+6. [filter_entries.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/filter_entries.py)
+7. [annotate.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/annotate.py)
+8. [xml_translate.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/xml_translate.py)
+9. [generate_embeddings.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/generate_embeddings.py)
+10. [analyze_vocab.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/analyze_vocab.py)
+11. [format_embeddings.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/format_embeddings.py)
+12. [cosine_similarity.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/cosine_similarity.py)
+13. [uniref_api.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/uniref_api.py)
+14. [filter_uniref_clusters.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/filter_uniref_clusters.py)
+15. [parse_uniref.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/parse_uniref.py)
+16. [get_cluster_index.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/get_cluster_index.py)
