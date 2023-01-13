@@ -1,6 +1,8 @@
 import re
+import nltk
 import pandas as pd
 import numpy as np
+import typing
 from typing import Any, Iterable
 from nltk.tokenize import word_tokenize
 from gensim.models import Word2Vec
@@ -58,7 +60,7 @@ def remove_special_characters(text: str):
     return cleaned_function
 
 
-def preprocess_data(data: pd.DataFrame) -> tuple[list[Any], list[Any]]:
+def preprocess_data(data: pd.DataFrame): # -> tuple[list[Any], list[Any]]:
     """
     Wrapper function for the pre-processing of the text.
     Parameters
@@ -87,7 +89,7 @@ def preprocess_data(data: pd.DataFrame) -> tuple[list[Any], list[Any]]:
     return accessions, functions
 
 
-def process_from_tsv(input_file_path: str) -> tuple[Iterable, Iterable]:
+def process_from_tsv(input_file_path: str): # -> tuple[Iterable, Iterable]:
     """
     Loads and pre-processes the data from the input TSV file.
     Parameters
@@ -100,7 +102,7 @@ def process_from_tsv(input_file_path: str) -> tuple[Iterable, Iterable]:
     return accessions, functions
 
 
-def create_word2vec_model(params: dict, docs: list, output_file_path: str) -> Word2Vec:
+def create_word2vec_model(params: dict, docs: list, output_file_path: str): # -> Word2Vec:
     """
     Generates and saves the Word2Vec model and builds the vocabulary from the function comment texts.
     Parameters
@@ -177,9 +179,130 @@ def create_document_embeddings(accessions: list, functions: list, word2vec_model
 
 
 if __name__ == "__main__":
-    # # # nltk.download('punkt')
-    accessions, functions = process_from_tsv("./data/output/functions/rev-20220525-UniProtKB.tsv")
-    params = {'vector_size': 200, 'epochs': 5, 'window': 5, 'min_count': 2, 'workers': 4, 'sg': 0}
-    create_word2vec_model(params, functions, "./data/output/model/word2doc2vec/cbow/min_count_2/word2vec.model")
-    model = Word2Vec.load("./data/output/model/word2doc2vec/cbow/min_count_2/word2vec.model")
-    create_document_embeddings(accessions, functions, "./data/output/model/word2doc2vec/cbow/min_count_2/word2vec.model", "./data/output/embeddings/word2doc2vec/cbow/min_count_2/")
+    # nltk.download('punkt')
+
+    # WORD2DOC2VEC APPROACH
+    accessions, functions = process_from_tsv("./data/rev-20220525-UniProtKB-eukaryota.tsv")
+
+    create_document_embeddings(accessions, functions,
+                               "./data/model/word2doc2vec/200/cbow/min_count_2/word2vec.model",
+                               "./data/embeddings/word2doc2vec/200/cbow/min_count_2/")
+    print("Generated model 1")
+
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/word2doc2vec/200/cbow/min_count_3/word2vec.model",
+    #                            "./data/embeddings/word2doc2vec/200/cbow/min_count_3/")
+    # print("Generated model 2")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/word2doc2vec/200/cbow/min_count_4/word2vec.model",
+    #                            "./data/embeddings/word2doc2vec/200/cbow/min_count_4")
+    # print("Generated model 3")
+
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/word2doc2vec/200/sg/min_count_2/word2vec.model",
+    #                            "./data/embeddings/word2doc2vec/200/sg/min_count_2/")
+    # print("Generated model 4")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/word2doc2vec/200/sg/min_count_3/word2vec.model",
+    #                            "./data/embeddings/word2doc2vec/200/sg/min_count_3/")
+    # print("Generated model 5")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/word2doc2vec/200/sg/min_count_4/word2vec.model",
+    #                            "./data/embeddings/word2doc2vec/200/sg/min_count_4/")
+    # print("Generated model 6")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/word2doc2vec/400/cbow/min_count_2/word2vec.model",
+    #                            "./data/embeddings/word2doc2vec/400/cbow/min_count_2/")
+    # print("Generated model 7")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/word2doc2vec/400/cbow/min_count_3/word2vec.model",
+    #                            "./data/embeddings/word2doc2vec/400/cbow/min_count_3/")
+    # print("Generated model 8")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/word2doc2vec/400/cbow/min_count_4/word2vec.model",
+    #                            "./data/embeddings/word2doc2vec/400/cbow/min_count_4/")
+    # print("Generated model 9")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/word2doc2vec/400/sg/min_count_2/word2vec.model",
+    #                            "./data/embeddings/word2doc2vec/400/sg/min_count_2/")
+    # print("Generated model 10")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/word2doc2vec/400/sg/min_count_3/word2vec.model",
+    #                            "./data/embeddings/word2doc2vec/400/sg/min_count_3/")
+    # print("Generated model 11")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/word2doc2vec/400/sg/min_count_4/word2vec.model",
+    #                            "./data/embeddings/word2doc2vec/400/sg/min_count_4/")
+    # print("Generated model 12")
+
+    # HYBRID APPROACH
+    # accessions, functions = process_from_tsv("./data/rev-20220525-UniProtKB-eukaryota-hybrid.tsv")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                           "./data/model/hybridword2doc2vec/200/cbow/min_count_2/word2vec.model",
+    #                            "./data/embeddings/hybrid/200/cbow/min_count_2/")
+    # print("Generated model 1")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                           "./data/model/hybridword2doc2vec/200/cbow/min_count_3/word2vec.model",
+    #                            "./data/embeddings/hybrid/200/cbow/min_count_3/")
+    # print("Generated model 2")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                           "./data/model/hybridword2doc2vec/200/cbow/min_count_4/word2vec.model",
+    #                            "./data/embeddings/hybrid/200/cbow/min_count_4")
+    # print("Generated model 3")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                           "./data/model/hybridword2doc2vec/200/sg/min_count_2/word2vec.model",
+    #                            "./data/embeddings/hybrid/200/sg/min_count_2/")
+    # print("Generated model 4")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                           "./data/model/hybridword2doc2vec/200/sg/min_count_3/word2vec.model",
+    #                            "./data/embeddings/hybrid/200/sg/min_count_3/")
+    # print("Generated model 5")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                           "./data/model/hybridword2doc2vec/200/sg/min_count_4/word2vec.model",
+    #                            "./data/embeddings/hybrid/200/sg/min_count_4/")
+    # print("Generated model 6")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/hybridword2doc2vec/400/cbow/min_count_2/word2vec.model",
+    #                            "./data/embeddings/hybrid/400/cbow/min_count_2/")
+    # print("Generated model 7")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/hybridword2doc2vec/400/cbow/min_count_3/word2vec.model",
+    #                            "./data/embeddings/hybrid/400/cbow/min_count_3/")
+    # print("Generated model 8")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/hybridword2doc2vec/400/cbow/min_count_4/word2vec.model",
+    #                            "./data/embeddings/hybrid/400/cbow/min_count_4/")
+    # print("Generated model 9")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/hybridword2doc2vec/400/sg/min_count_2/word2vec.model",
+    #                            "./data/embeddings/hybrid/400/sg/min_count_2/")
+    # print("Generated model 10")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/hybridword2doc2vec/400/sg/min_count_3/word2vec.model",
+    #                            "./data/embeddings/hybrid/400/sg/min_count_3/")
+    # print("Generated model 11")
+    #
+    # create_document_embeddings(accessions, functions,
+    #                            "./data/model/hybridword2doc2vec/400/sg/min_count_4/word2vec.model",
+    #                            "./data/embeddings/hybrid/400/sg/min_count_4/")
+    # print("Generated model 12")
