@@ -47,4 +47,4 @@ def write_xml(input_tsv_file: str, output_xml_file: str) -> None:
 
 
 if __name__ == "__main__":
-    write_xml("./data/output/functions/rev-20220525-UniProtKB.tsv", "./data/output/functions/swissprot.xml")
+    write_xml("./data/output/functions/rev-20220525-UniProtKB.tsv", "./data/output/functions/rev-20220525-UniProtKB.xml")
