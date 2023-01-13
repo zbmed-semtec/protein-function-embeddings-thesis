@@ -138,5 +138,5 @@ def save_text(output_filepath: str, functions_dict: dict) -> None:
 if __name__ == "__main__":
     mesh_dict, go_dict = create_dict("./data/output/annotations/swissprot_go_mesh_formatted.xml")
     function_plain_text = translate("./data/output/annotations/swissprot_go_mesh_formatted.xml", mesh_dict, go_dict)
-    save_text("swissprot_functions.tsv", function_plain_text)
+    save_text("rev-20220525-UniProtKB-annotated-translated.tsv", function_plain_text)
 
