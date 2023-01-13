@@ -94,7 +94,7 @@ def format_output(output_path, formatted_output_path) -> None:
 
 
 if __name__ == "__main__":
-    format_input("./data/output/functions/swissprot.xml", "./data/output/annotations/swissprot_sed.xml")
+    format_input("./data/output/functions/rev-20220525-UniProtKB.xml", "./data/output/annotations/swissprot_sed.xml")
     annotate("./data/output/annotations/swissprot_sed.xml", "./data/output/annotations/swissprot_go.xml")
     format_output("./data/output/annotations/swissprot_go.xml", "./data/output/annotations/swissprot_go_formatted.xml")
     format_input("./data/output/functions/swissprot_go_formatted.xml", "./data/output/annotations/swissprot_go_sed.xml")
