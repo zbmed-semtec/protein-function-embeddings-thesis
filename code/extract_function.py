@@ -16,7 +16,8 @@ def extract_function_comment(input_filepath) -> list[dict[str, str]]:
     Returns
     -------
     all_entries : list[dict[str,str]]
-        List of dictionaries of each entry with key as accession number and value as function comment.
+        List of dictionaries of each entry with key as accession number and value as function comment, evidence tags,
+        and taxonomy metadata.
     """
     all_entries = []
     root = ET.parse(input_filepath).getroot()

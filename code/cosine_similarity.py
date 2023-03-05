@@ -145,52 +145,52 @@ if __name__ == "__main__":
                   "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_word2doc2vec_12.npz")
 
     # HYBRID
-    # print("Combination 1")
-    # create_matrix("./data/emb_pickle/hybrid_embs_euk_1.pkl",
-    #                "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_1.npz")
-    #
-    # print("Combination 2")
-    # create_matrix("./data/emb_pickle/hybrid_embs_euk_2.pkl",
-    #                "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_2.npz")
-    #
-    # print("Combination 3")
-    # create_matrix("./data/emb_pickle/hybrid_embs_euk_3.pkl",
-    #                "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_3.npz")
-    #
-    # print("Combination 4")
-    # create_matrix("./data/emb_pickle/hybrid_embs_euk_4.pkl",
-    #              "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_4.npz")
-    #
-    # print("Combination 5")
-    # create_matrix("./data/emb_pickle/hybrid_embs_euk_5.pkl",
-    #              "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_5.npz")
-    #
-    # print("Combination 6")
-    # create_matrix("./data/emb_pickle/hybrid_embs_euk_6.pkl",
-    #              "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_6.npz")
-    #
-    # print("Combination 7")
-    # create_matrix("./data/emb_pickle/hybrid_embs_euk_7.pkl",
-    #              "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_7.npz")
-    #
-    # print("Combination 8")
-    # create_matrix("./data/emb_pickle/hybrid_embs_euk_8.pkl",
-    #              "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_8.npz")
-    #
-    # print("Combination 9")
-    # create_matrix("./data/emb_pickle/hybrid_embs_euk_9.pkl",
-    #              "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_9.npz")
-    #
-    # print("Combination 10")
-    # create_matrix("./data/emb_pickle/hybrid_embs_euk_10.pkl",
-    #              "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_10.npz")
-    #
-    # print("Combination 11")
-    # create_matrix("./data/emb_pickle/hybrid_embs_euk_11.pkl",
-    #              "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_11.npz")
-    #
-    # print("Combination 12")
-    # create_matrix("./data/emb_pickle/hybrid_embs_euk_12.pkl",
-    #              "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_12.npz")
+    print("Combination 1")
+    create_matrix("./data/emb_pickle/hybrid_embs_euk_1.pkl",
+                   "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_1.npz")
+
+    print("Combination 2")
+    create_matrix("./data/emb_pickle/hybrid_embs_euk_2.pkl",
+                   "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_2.npz")
+
+    print("Combination 3")
+    create_matrix("./data/emb_pickle/hybrid_embs_euk_3.pkl",
+                   "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_3.npz")
+
+    print("Combination 4")
+    create_matrix("./data/emb_pickle/hybrid_embs_euk_4.pkl",
+                 "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_4.npz")
+
+    print("Combination 5")
+    create_matrix("./data/emb_pickle/hybrid_embs_euk_5.pkl",
+                 "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_5.npz")
+
+    print("Combination 6")
+    create_matrix("./data/emb_pickle/hybrid_embs_euk_6.pkl",
+                 "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_6.npz")
+
+    print("Combination 7")
+    create_matrix("./data/emb_pickle/hybrid_embs_euk_7.pkl",
+                 "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_7.npz")
+
+    print("Combination 8")
+    create_matrix("./data/emb_pickle/hybrid_embs_euk_8.pkl",
+                 "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_8.npz")
+
+    print("Combination 9")
+    create_matrix("./data/emb_pickle/hybrid_embs_euk_9.pkl",
+                 "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_9.npz")
+
+    print("Combination 10")
+    create_matrix("./data/emb_pickle/hybrid_embs_euk_10.pkl",
+                 "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_10.npz")
+
+    print("Combination 11")
+    create_matrix("./data/emb_pickle/hybrid_embs_euk_11.pkl",
+                 "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_11.npz")
+
+    print("Combination 12")
+    create_matrix("./data/emb_pickle/hybrid_embs_euk_12.pkl",
+                 "./data/rev-20220525-UniProtKB-eukaryota-20.tsv", "./data/cosine/cosine_hybrid_12.npz")
 
 
