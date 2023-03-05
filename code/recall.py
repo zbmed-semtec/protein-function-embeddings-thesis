@@ -133,6 +133,19 @@ def calculate_recall(cosine_matrix: np.matrix, progress_proxy: tqdm, subset: boo
 
 
 def write_recall_scores(hyperparameter: str, true_positives: int, false_positives: int, recall_file: str) -> None:
+    """
+
+    Parameters
+    ----------
+    hyperparameter : str
+        Name of hyperparameter combination.
+    true_positives : int
+        Count of true positives.
+    false_positives : int
+        Count of false negatives.
+    recall_file : str
+        Filepath to store recall scores.
+    """
     headers = ['Parameter', "True positives", "False positves", "Recall"]
     data = [hyperparameter, true_positives, false_positives, true_positives/(true_positives+false_positives)]
     with open(recall_file, 'w', newline='') as output_file:
