@@ -1,27 +1,30 @@
-# Pipeline
+# Pipeline for Thesis
 
-1. [extract_function.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/extract_function.py)
-2. [format_xml.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/format_xml.py)
-3. [parse_mesh.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/parse_mesh.py)
-4. [parse_go.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/parse_go.py)
-5. [analyze_taxon.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/analyze_taxon.py)
-6. [filter_entries.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/filter_entries.py)
-7. [annotate.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/annotate.py)
-8. [xml_translate.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/xml_translate.py)
-9. [generate_embeddings.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/generate_embeddings.py)
-10. [analyze_vocab.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/analyze_vocab.py)
-11. [format_embeddings.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/format_embeddings.py)
-12. [cosine_similarity.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/cosine_similarity.py)
-13. [uniref_api.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/uniref_api.py)
-14. [filter_uniref_clusters.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/filter_uniref_clusters.py)
-15. [parse_uniref.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/parse_uniref.py)
-16. [get_cluster_index.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/get_cluster_index.py)
-17. [generate_pairs.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/generate_pairs.py)
-18. [recall.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/recall.py)
-19. [cosine_similarity_allpairs.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/cosine_similarity_allpairs.py)
-20. [parse_fasta.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/parse_fasta.py)
-21. [elastic_blast.ini](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/elastic_blast.ini)
-22. [blast.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/blast.py)
-23. [score_matrix.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/score_matrix.py)
-24. [plot.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/plot.py)
-25. [analysis.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/analysis.py)
+This folder contains code files for the pipeline of this thesis. The entire pipeline is divided into 25 code files that are numbered to indicate the order in which they should be executed. At a broader level, the pipeline performs data preprocessing, model training, hyperparameter optimization, model evaluation and analysis.
+
+
+1. [extract_function.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/extract_function.py) : This script extracts the function comments along with taxonomy data from the Swiss-Prot XML file as saves it as a TSV file.
+2. [format_xml.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/format_xml.py) : This script creates an XML file with each Swiss-Prot protein as an element along with its corresponding data.
+3. [parse_mesh.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/parse_mesh.py) : This script parses the MeSH.TTL file, coverts and saves it as an MWT dictionary.
+4. [parse_go.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/parse_go.py) : This script parses the GO.XRDF file, coverts and saves it as an MWT dictionary.
+5. [analyze_taxon.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/analyze_taxon.py) : This script performs a counting analysis of the Swiss-prot entries based on each super kingdom.
+6. [filter_entries.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/filter_entries.py) : This script filters the Swiss-Prot entries based on the Eukaryota super kingdom as well as extracts a subset (20%) of the Eukaryota protein entries and saves them as two separate TSV files.
+7. [annotate.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/annotate.py) : This script is used to annotate the protein function texts of all Swiss-Prot entries using Whatizit tool with two controlled vocabularies of MeSH and Gene Ontology.
+8. [xml_translate.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/xml_translate.py) : This script is used to translate and replace the MeSH and GO annotations from the function texts to its corresponding MeSH and GO IDs.
+9. [generate_embeddings.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/generate_embeddings.py) : This scripts creates and trains the Word2Vec model and the creates the document embeddings.
+10. [analyze_vocab.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/analyze_vocab.py) : This script analyzes the count and difference of each Word2Vec model's vocabulary based on the hyperparameters. 
+11. [format_embeddings.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/format_embeddings.py) : This script creates a two-column Pandas dataframe consisting of the protein 'accessions' and 'embeddings' and saves it in a Pickle file format.
+12. [cosine_similarity.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/cosine_similarity.py) : This scripts generates a cosine similarity matrix for a subset (20%) of Eukaryota entries, calculates the cosine similarity between each pair of protein accessions and stores the matrix as a .npz file.
+13. [uniref_api.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/uniref_api.py) : This script sends an REST API request to UniProt's API to extract UniRef 90% identity Eukaryota clusters having a threshold of 2 as its cluster size, extracts the resulting two TSV files and merges them into a single TSV file for further filtering.
+14. [filter_uniref_clusters.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/filter_uniref_clusters.py) : This script filters entries from the UniRef TSV file by only keeping the clusters having at least one Swiss-Prot protein member.
+15. [parse_uniref.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/parse_uniref.py): This script parses the UniRef 90% identity XML file to retrieve all clusters of interest along with all of its corresponding protein members.
+16. [get_cluster_index.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/get_cluster_index.py) : This script extracts the corresponding UniRef cluster ID that each Swiss-Prot Eukaryota belongs to.
+17. [generate_pairs.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/generate_pairs.py) : This script generates pairs of Swiss-Prot Eukaryota proteins based on all those that belong and do not belong to any UniRef cluster of interest. These are saved as two TSV files, those that are clustered and those that are not clustered.
+18. [recall.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/recall.py) : This script calculates Recall scores for the clustered pairs based on the 20% subset of Eukaryota in order to select the optimal model and saves the scores in a TSV file. Further it also computes the Recall scores for the two best models based on the entire Eukaryota dataset.
+19. [cosine_similarity_allpairs.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/cosine_similarity_allpairs.py) : This scripts generates a cosine similarity matrix for all Eukaryota entries, calculates the cosine similarity between each pair of protein accessions and stores the matrix as a .npz file.
+20. [parse_fasta.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/parse_fasta.py): This script parses the Swiss-Prot Fasta file to extract all sequences for Eukaryota protein entries and saves them into different Fasta files with each file consisting of about 10,000 sequences.
+21. [elastic_blast.ini](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/elastic_blast.ini): This script executes an ElasticBLAST search to be executed using the Google Cloud Console in order to obtain BLAST alignments and percentage identity scores for Eukaryota entries.
+22. [blast.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/blast.py): This script uncompresses, merges, and parses the BLAST results and saves the scores in a TSV file with every row belonging to a pair of proteins along with its corresponding percentage identity score. 
+23. [score_matrix.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/score_matrix.py): This script generates score matrices for the optimal model of both the embedding approaches based on those entries that have been clustered or non-clustered. It adds the corresponding cosine similarity scores, blast percentage identity scores as well as the taxon for each of the protein accessions. 
+24. [plot.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/plot.py): This script plots a scatter plot for the best optimal model of both the embedding approaches considering those proteins that have been clustered together. The scatter plot represents a sequence versus embedding similarity. 
+25. [analysis.py](https://github.com/zbmed-semtec/protein-function-embeddings-thesis/blob/main/code/analysis.py): This script performs the downstream analysis on those proteins that have not been clustered and categorizes them further into sub-categories.

@@ -74,7 +74,7 @@ def write_fasta(fast_file: str) -> None:
         Filepath to the fasta file containing all Eukaryota sequences.
     """
     record_iter = [i for i in SeqIO.parse(open(fast_file), "fasta")]
-    for i, batch in enumerate(batch_iterator(record_iter, 100)):
+    for i, batch in enumerate(batch_iterator(record_iter, 10000)):
         filename = "eukaryota_group_%i.fasta" % (i + 1)
         with open(filename, "w") as handle:
             count = SeqIO.write(batch, handle, "fasta")
