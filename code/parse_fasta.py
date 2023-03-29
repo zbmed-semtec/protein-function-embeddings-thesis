@@ -74,7 +74,7 @@ def write_fasta(fast_file: str) -> None:
         Filepath to the fasta file containing all Eukaryota sequences.
     """
     record_iter = [i for i in SeqIO.parse(open(fast_file), "fasta")]
-    for i, batch in enumerate(batch_iterator(record_iter, 10000)):
+    for i, batch in enumerate(batch_iterator(record_iter, 100)):
         filename = "eukaryota_group_%i.fasta" % (i + 1)
         with open(filename, "w") as handle:
             count = SeqIO.write(batch, handle, "fasta")
@@ -84,6 +84,6 @@ def write_fasta(fast_file: str) -> None:
 if __name__ == "__main__":
     eukaryota_accessions = extract_eukaryota_accessions("./data/output/functions/rev-20220525-UniProtKB-eukaryota.tsv")
     eukaryota_fasta = parse_fasta("./data/uniprot/swissprot/uniprot_sprot-only2022_02/uniprot_sprot.fasta", eukaryota_accessions)
-    write_fasta("data/output/functions/swissprot-eukaryota.fasta")
+    write_fasta("./data/output/functions/swissprot-eukaryota.fasta")
 
 
